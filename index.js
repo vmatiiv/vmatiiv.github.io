@@ -1,5 +1,4 @@
-const XHR = new XMLHttpRequest(),
-      ONE_DAY = 1000*60*60*24;
+const ONE_DAY = 1000*60*60*24;
 var rateArray = [];
 //get 2 string dates
 //return 1 value difference between dates
@@ -39,11 +38,16 @@ var xhrRequest = (url) =>{
   })
   .then(function(myJson) {
     rateArray.push(myJson[0].rate); 
+    var p = document.createElement('p');
+    p.innerText=`${myJson[0].exchangedate} rate was ${myJson[0].rate.toFixed(2)}`;
+    main.appendChild(p);
+    return myJson[0].rate
   });
 
 }
 
 send.addEventListener('click',()=>{
+  main.innerHTML='';
   var startDate = document.getElementById('startDate').value;
   var endDate = document.getElementById('endDate').value;
   var ourDate = returnValidDate(startDate,endDate);
@@ -57,18 +61,20 @@ send.addEventListener('click',()=>{
   for(let i = 0; i <= ourDate[2];i++){
     var date = convertDate(ourDate[0],i);
     var url =`https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=${valcode.value}&date=${date}&json`;
-    xhrRequest(url); 
+    xhrRequest(url);
   }
+  
+
 },false);
 
 
 build.addEventListener('click',()=>{
+
   var filled=[];
   for (let i = 0; i < rateArray.length; i++) {
     filled.push(i);
     
   }
-  console.log(filled)
   var trace1 = {
     x: filled,
     y: rateArray,
